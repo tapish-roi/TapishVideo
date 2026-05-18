@@ -105,11 +105,14 @@ export const TapishVideo: React.FC = () => {
       >
         <div
           style={{
-            // Scale 608→1080 (factor 1.777), then upscale 10% more to crop watermark.
-            width: "119%",
-            height: "119%",
+            // Scale source (608×1080) to 1147×2040 — 6.25% taller than 1920.
+            // Crop: center-x (33px each side) and top-align so the bottom 120px
+            // (where the BIGVU watermark lives) falls off frame entirely.
+            width: `${(1147 / 1080) * 100}%`,   // 106.2% of comp width
+            height: `${(2040 / 1920) * 100}%`,   // 106.25% of comp height
             position: "relative",
-            top: "-4%",
+            left: `${-((1147 - 1080) / 2 / 1080) * 100}%`, // -3.1% centers x
+            top: "0%", // anchor to top — watermark falls off the bottom
           }}
         >
           <Video
@@ -117,11 +120,11 @@ export const TapishVideo: React.FC = () => {
             style={{
               width: "100%",
               height: "100%",
-              objectFit: "cover",
+              objectFit: "fill",
               // House style color grade:
-              // - desaturate to ~72% of native
-              // - slight cool hue shift (-5deg)
-              // - lift contrast slightly to compensate for warm underexposure
+              // - desaturate to 72% of native (cool-neutral look)
+              // - hue -5deg to remove warm cast
+              // - brightness +5% and contrast +5% to compensate for underexposure
               filter: "saturate(0.72) hue-rotate(-5deg) brightness(1.05) contrast(1.05)",
             }}
           />
